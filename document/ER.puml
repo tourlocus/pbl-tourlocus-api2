@@ -1,0 +1,96 @@
+@startuml
+
+package "TourLocus_api" as RDB <<Database>> {
+  class "ユーザ" as users << T, FFAA00 >> {
+    + ID [PK]
+    ---
+    ユーザー名
+    パスワード
+    メールアドレス
+    生年月日
+    性別
+    自己紹介
+    アイコン
+  }
+
+  class "記事" as articles << T, FFAA00>> {
+    + ID [PK]
+    ---
+    タイトル
+    本文
+    閲覧数
+    ---
+    * USER_ID [FK]
+  }
+
+  class "フォロー" as follows << T, FFAA00 >> {
+    + ID [PK]
+    ---
+    * USER_ID [FK]
+    * USER_ID [FK]
+  }
+
+  class "コメント" as comments << T, FFAA00 >> {
+    + ID [PK]
+    ---
+    コメント
+    ---
+    * ARTICLE_ID [FK] 
+    * USER_ID [FK]
+  }
+
+  class "お気に入り" as favorites << T, FFAA00 >> {
+    + ID [PK]
+    ---
+    状態
+    ---
+    * USER_ID [FK]
+    * ARTICLE_ID [FK]
+  }
+
+  class "メディア" as media_file << T, FFAA00 >> {
+    + ID [PK]
+    ---
+    メデイア
+    ---
+    * ARTICLE_ID [FK]
+  }
+
+  class "関連タグ" as article_tag << R, f2b848 >> {
+   + ID [PK]
+   ---
+   * ARTICLE_ID [FK]
+   * TAG_ID [FK] 
+  }
+
+  class "タグ" as tags << T, FFAA00 >> {
+    + ID [PK]
+    ---
+    タグ名
+  }
+
+  class "お土産" as presents << T, FFAA00 >> {
+    + ID [PK]
+    ---
+    商品名
+    値段
+    個数
+    購入相手
+    感想
+    写真
+    ---
+    * ARTICLE_ID [FK]
+  }
+}
+
+users "1" -ri- "*" articles
+users "1" -le- "*" favorites
+users "*" -do- "1" follows
+articles  "1" -do- "*" comments
+users "1" -do- "*" comments
+articles "1" -do- "*" media_file
+articles "1" -ri- "*" article_tag
+article_tag "1" -ri- "*" tags
+articles "1" -do- "*" presents
+
+@enduml
