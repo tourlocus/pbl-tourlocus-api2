@@ -1,5 +1,5 @@
 class ArticleController < ApplicationController
-  before_action :authenticate_user!, only: [:create, :edit, :update]
+  # before_action :authenticate_user!, only: [:create, :edit, :update]
 
   # 記事編集
   def edit
@@ -79,7 +79,7 @@ class ArticleController < ApplicationController
   def show
     @article = Article.joins(:user)
       .select("articles.*, users.name, users.icon")
-      .find(params[:id])
+      .where("users.name = ? AND articles.id = ?", params[:name], params[:id]).first
 
     @tags = ArticleTag.joins(:tag)
       .select("tags.name")
@@ -92,14 +92,14 @@ class ArticleController < ApplicationController
     @fav_status = User.left_joins(:favorites)
       .select("users.id, favorites.article_id, favorites.status")
       .where("favorites.article_id = ?", params[:id])
-      .where("users.name = ?", params[:userName])
+      .where("users.name = ?", params[:name])
       .where("favorites.status", true).exists?
 
     @comments = Comment.joins(:user)
       .select("users.icon as userIcon, users.name as userName, comments.comment as comment")
       .where("comments.article_id = ?", params[:id])
 
-    if @article.name != params[:userName] then
+    if @article.name != params[:name] then
       Article.find(params[:id]).increment!(:pv)
     end
 
