@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   put  "items/update/:id", to: "article#update"
   post "items/create",    to: "article#create"
   
+  post "comments/post", to: "comment#post"
+  
   # Devise 設定
   mount_devise_token_auth_for 'User', at: 'auth',
   controllers: {
