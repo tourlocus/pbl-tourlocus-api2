@@ -4,6 +4,8 @@ class UserController < ApplicationController
   def items
     user = User.find_by("name = ?", params[:name])
     @user = User.find(user.id)
+    @follow = Follow.where("user_id = ?", user.id).count
+    @follower = Follow.where("follow_id = ?", user.id).count
 
     @articles = Article.where("user_id = ?", user.id)
       .order("updated_at DESC")
