@@ -1,7 +1,8 @@
 json.icon       @user.icon
-json.user_name   @user.name
+json.user_name  @user.name
 json.intro      @user.intro
-
+json.follow     @follow
+json.follower   @follower
 
 # 自分の記事
 json.articles do 

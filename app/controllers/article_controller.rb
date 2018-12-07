@@ -1,17 +1,22 @@
 class ArticleController < ApplicationController
-  # before_action :authenticate_user!, only: [:create, :edit, :update]
+  before_action :authenticate_user!, only: [:create, :edit, :update]
 
   # 記事編集
   def edit
     @article = Article.find(params[:id])
-    @media = MediaFile
-      .select("media_files.media as url")
-      .where("article_id=?", @article.id)
-    @tags = ArticleTag.joins(:tag)
-      .select("tags.id, tags.name")
-      .where("article_tags.article_id=?", @article.id)
 
-    render 'edit', formats: 'json', handlers: 'jbuilder'
+    if @article.user_id != current_user.id
+      render json: {message: "user error"}
+    else
+
+      @media = MediaFile
+        .select("media_files.media as url")
+        .where("article_id=?", @article.id)
+      @tags = ArticleTag.joins(:tag)
+        .select("tags.id, tags.name")
+        .where("article_tags.article_id=?", @article.id)
+      render 'edit', formats: 'json', handlers: 'jbuilder'
+    end
 
   end
 
@@ -79,31 +84,36 @@ class ArticleController < ApplicationController
   def show
     @article = Article.joins(:user)
       .select("articles.*, users.name, users.icon")
-      .where("users.name = ? AND articles.id = ?", params[:name], params[:id]).first
+      .where("articles.id = ?", params[:id]).first
 
-    @tags = ArticleTag.joins(:tag)
-      .select("tags.name")
-      .where("article_tags.article_id = ?", params[:id])
+    if @article.name != params[:name]
+      render json: {message: 'name error'}
+    else
 
-    @media = MediaFile.joins(:article)
-      .select("media_files.media as url")
-      .where("articles.id = ?", params[:id])
+      @tags = ArticleTag.joins(:tag)
+        .select("tags.name")
+        .where("article_tags.article_id = ?", params[:id])
 
-    @fav_status = User.left_joins(:favorites)
-      .select("users.id, favorites.article_id, favorites.status")
-      .where("favorites.article_id = ?", params[:id])
-      .where("users.name = ?", params[:name])
-      .where("favorites.status", true).exists?
+      @media = MediaFile.joins(:article)
+        .select("media_files.media as url")
+        .where("articles.id = ?", params[:id])
 
-    @comments = Comment.joins(:user)
-      .select("users.icon as userIcon, users.name as userName, comments.comment as comment")
-      .where("comments.article_id = ?", params[:id])
+      @fav_status = User.left_joins(:favorites)
+        .select("users.id, favorites.article_id, favorites.status")
+        .where("favorites.article_id = ?", params[:id])
+        .where("users.name = ?", params[:name])
+        .where("favorites.status", true).exists?
 
-    if @article.name != params[:name] then
-      Article.find(params[:id]).increment!(:pv)
+      @comments = Comment.joins(:user)
+        .select("users.icon as userIcon, users.name as userName, comments.comment as comment")
+        .where("comments.article_id = ?", params[:id])
+
+      if @article.user_id != current_user.id then
+        Article.find(params[:id]).increment!(:pv)
+      end
+
+      render 'show', formats: 'json', handlers: 'jbuilder'
     end
-
-    render 'show', formats: 'json', handlers: 'jbuilder'
   end
 
 end
