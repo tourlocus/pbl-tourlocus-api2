@@ -1,12 +1,15 @@
 Rails.application.routes.draw do
-  get  "items/edit/:id",  to: "article#edit"
+  
+  get  "/articles/:id",  to: "article#edit"
+
   get  "items/show/:name/:id",  to: "article#show" 
 
   get   '/users/:name/items', to: "user#items"
 
   get '/comments/:id', to: 'comment#get'
   
-  put  "items/update/:id", to: "article#update"
+  put  "/articles/:id", to: "article#update"
+  
   put '/comments/:id', to: 'comment#update'
   post "items/create",    to: "article#create"
   
