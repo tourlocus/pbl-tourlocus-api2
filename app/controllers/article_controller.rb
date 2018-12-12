@@ -116,4 +116,18 @@ class ArticleController < ApplicationController
     end
   end
 
+  # top(main) page
+  def index
+    @articles = Article.joins(:user)
+      .select("articles.*, users.name, users.icon")
+      .order(created_at: :desc).limit(15)
+    mlist = MediaFile.select("min(id) as id")
+      .where(article_id: @articles.pluck("id").uniq)
+      .group(:article_id).map(&:id)
+    @media = MediaFile.where(id: mlist)
+
+    #render :json => @articles
+    render 'index', formats: 'json', handlers: 'jbuilder'
+  end
+
 end
