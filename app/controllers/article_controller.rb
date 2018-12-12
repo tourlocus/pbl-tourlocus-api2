@@ -6,15 +6,15 @@ class ArticleController < ApplicationController
     @article = Article.find(params[:id])
 
     if @article.user_id != current_user.id
-      render json: {message: "user error"}, status: 401
+      render json: {message: "user error"}
     else
+
       @media = MediaFile
         .select("media_files.media as url")
         .where("article_id=?", @article.id)
       @tags = ArticleTag.joins(:tag)
         .select("tags.id, tags.name")
         .where("article_tags.article_id=?", @article.id)
-
       render 'edit', formats: 'json', handlers: 'jbuilder'
     end
 
@@ -27,8 +27,6 @@ class ArticleController < ApplicationController
 
     # ファイルアップロード
     files = params[:files]
-
-    # ファイルがあった場合
     if files != nil
       old_media = MediaFile.where("article_id=?", article.id)
       if old_media.length != 0  
@@ -39,10 +37,6 @@ class ArticleController < ApplicationController
         new_media = MediaFile.create!(:media => t, :article_id => article.id)
         new_media.save!
       end
-
-    elsif
-      # ファイルがない場合
-      p files
     end
 
     tags = params[:tags]
@@ -132,7 +126,12 @@ class ArticleController < ApplicationController
       .group(:article_id).map(&:id)
     @media = MediaFile.where(id: mlist)
 
-    #render :json => @articles
+    @items = Article.joins(:user)
+      .left_joins_media(mlist)
+      .select("articles.*, users.name, users.icon, media_files.media")
+      .order(created_at: :desc).limit(15)
+      .order("point DESC").limit(15)
+
     render 'index', formats: 'json', handlers: 'jbuilder'
   end
 
