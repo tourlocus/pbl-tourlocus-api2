@@ -4,12 +4,12 @@ Rails.application.routes.draw do
 
   get  "items/show/:name/:id",  to: "article#show" 
 
-  get   '/users/:name/items', to: "user#items"
+  get   '/users/:name', to: "user#home"
 
   get '/comments/:id', to: 'comment#get'
   
   put  "/articles/:id", to: "article#update"
-  
+
   put '/comments/:id', to: 'comment#update'
   post "items/create",    to: "article#create"
   
