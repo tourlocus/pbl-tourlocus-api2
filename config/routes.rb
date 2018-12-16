@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   get  "/articles/:id",  to: "article#edit"
 
   get  "items/show/:name/:id",  to: "article#show" 
+  get   "/articles", to: "article#index"
 
   get   '/users/:name/items', to: "user#items"
 
