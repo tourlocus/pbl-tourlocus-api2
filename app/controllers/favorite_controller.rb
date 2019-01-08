@@ -1,8 +1,16 @@
 class FavoriteController < ApplicationController
-  def update
-    status = Favorite.where("article_id = ?", params[:id])
-    status.update(:user_id => current_user.id, :article_id => params[:id], :status => params[:status])
+  before_action :authenticate_user!, only: [:update]
 
-    render :json => status.status
-  end  
+  #-----------------------------------------
+  # お気に入り登録
+  #-----------------------------------------
+  def post
+  end
+
+  #-----------------------------------------
+  # お気に入り削除
+  #-----------------------------------------
+  def delete
+  end
+
 end

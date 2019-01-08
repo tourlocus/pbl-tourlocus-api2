@@ -22,7 +22,8 @@ Rails.application.routes.draw do
   #---------------------------------
   # お気に入り
   #--------------------------------
-  put '/favorites/:id', to: 'favorite#update'
+  post '/favorites', to: 'favorite#post'
+  delete '/favorites/:id', to: 'favorite#delete'
   #---------------------------------
   # Devise 設定
   #---------------------------------
