@@ -24,6 +24,13 @@ Rails.application.routes.draw do
   #--------------------------------
   put '/favorites/:id', to: 'favorite#update'
   #---------------------------------
+  # お土産
+  #--------------------------------
+  get 'presents/new', to: 'presents#new'        # お土産作成(B->F select)
+  post 'presents/create', to: 'presents#create' # お土産作成(F->B insert)
+  get 'presents/edit/:id', to: 'presents#edit'  # お土産編集(B->F select)
+  put 'presents/update', to: 'presents#update' # お土産編集(F->B update)
+  #---------------------------------
   # Devise 設定
   #---------------------------------
   mount_devise_token_auth_for 'User', at: 'auth',
