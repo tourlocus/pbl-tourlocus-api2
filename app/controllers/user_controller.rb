@@ -1,7 +1,7 @@
 class UserController < ApplicationController
 
   # ユーザーページ記事一覧
-  def items
+  def home
     user = User.find_by("name = ?", params[:name])
     @user = User.find(user.id)
     @follow = Follow.where("user_id = ?", user.id).count
@@ -10,7 +10,7 @@ class UserController < ApplicationController
     @articles = Article.where("user_id = ?", user.id)
       .order("updated_at DESC")
     @favorites = User.joins({:articles => :favorites})
-      .select("users.id, users.icon, users.name, articles.id as articleID, articles.title, articles.updated_at")
+      .select("users.id, users.icon, users.name, articles.id as articleID, articles.title, articles.content, articles.updated_at")
       .where("favorites.status = ?", true)
       .where("favorites.user_id = ?", user.id)
     @tags = Article.left_joins({:article_tags => :tag})

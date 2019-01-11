@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   # 記事
   #-----------------------------------
   get   "/articles", to: "article#index"
+  get   "/articles/search/:word", to: "article#search" 
   get   "/articles/:id",  to: "article#edit"
   get   "/articles/:name/:id",  to: "article#show"
   put   "/articles/:id", to: "article#update"
@@ -22,7 +23,8 @@ Rails.application.routes.draw do
   #---------------------------------
   # お気に入り
   #--------------------------------
-  put '/favorites/:id', to: 'favorite#update'
+  post '/favorites', to: 'favorite#post'
+  delete '/favorites/:id', to: 'favorite#delete'
   #---------------------------------
   # お土産
   #--------------------------------
