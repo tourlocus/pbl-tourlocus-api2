@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 2018_11_09_051608) do
 
   create_table "articles", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "title", null: false
-    t.string "content", null: false
+    t.text "content", null: false
     t.integer "pv", default: 0
     t.bigint "user_id"
     t.datetime "created_at", null: false
