@@ -144,4 +144,19 @@ class ArticleController < ApplicationController
     render 'index', formats: 'json', handlers: 'jbuilder'
   end
 
+  #-------------------------------------
+  # 記事検索
+  #------------------------------------
+  def search
+    search_word = params[:word]
+
+    @items = []
+    search_word.split(' ').each do |word|
+      @items += Article.search_word(word)
+    end
+
+    render 'search', formats: 'json', handlers: 'jbuilder'
+  end
+
+
 end
