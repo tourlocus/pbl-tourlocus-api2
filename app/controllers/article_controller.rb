@@ -152,41 +152,7 @@ class ArticleController < ApplicationController
 
     @items = []
     search_word.split(' ').each do |word|
-      @items += Article.find_by_sql(['
-          select distinct
-            articles.*,
-            users.name,
-            users.icon,
-            (
-              select
-                media
-              from
-                media_files, articles
-              where
-                media_files.article_id = articles.id
-              order by
-                media desc
-              limit 1
-            ) as "media"
-          from
-            articles
-          inner join
-            article_tags
-          on
-            articles.id = article_tags.article_id
-          inner join
-            tags
-          on
-            tags.id = article_tags.tag_id
-          inner join
-            users
-          on
-            articles.user_id = users.id
-          where
-            (tags.name in (:word))
-          or
-            articles.title like "%:word%"
-        ', {:word => word}])
+      @items += Article.search_word(word)
     end
 
     render 'search', formats: 'json', handlers: 'jbuilder'
