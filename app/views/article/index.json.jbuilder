@@ -21,6 +21,7 @@ json.popular do
     json.media        popular.media
     json.title        popular.title
     json.content      popular.content
+    json.popular      popular.pv
     json.created_at   popular.created_at
     json.updated_at   popular.updated_at
   end
