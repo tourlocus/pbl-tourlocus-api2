@@ -5,8 +5,9 @@ Rails.application.routes.draw do
   # 記事
   #-----------------------------------
   get   "/articles", to: "article#index"
+  get   "/articles/search/:word", to: "article#search" 
   get   "/articles/:id",  to: "article#edit"
-  get   "/articles/:name/:id",  to: "article#show" 
+  get   "/articles/:name/:id",  to: "article#show"
   put   "/articles/:id", to: "article#update"
   post  "/articles/create", to: "article#create"
   #----------------------------------
