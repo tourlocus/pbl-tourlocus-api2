@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   #-----------------------------------
   get   "/articles", to: "article#index"
   get   "/articles/:id",  to: "article#edit"
-  get   "/articles/:name/:id",  to: "article#show" 
+  get   "/articles/:name/:id",  to: "article#show"
   put   "/articles/:id", to: "article#update"
   post  "/articles/create", to: "article#create"
   #----------------------------------
@@ -24,6 +24,13 @@ Rails.application.routes.draw do
   #--------------------------------
   post '/favorites', to: 'favorite#post'
   delete '/favorites/:id', to: 'favorite#delete'
+  #---------------------------------
+  # お土産
+  #--------------------------------
+  get 'presents/new', to: 'presents#new'        # お土産作成(B->F select)
+  post 'presents/create', to: 'presents#create' # お土産作成(F->B insert)
+  get 'presents/edit/:id', to: 'presents#edit'  # お土産編集(B->F select)
+  put 'presents/update', to: 'presents#update' # お土産編集(F->B update)
   #---------------------------------
   # Devise 設定
   #---------------------------------

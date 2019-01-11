@@ -1,5 +1,7 @@
 class ArticleController < ApplicationController
   before_action :authenticate_user!, only: [:create, :edit, :update]
+  # 定数 #
+  DISPLAY = 15  #記事の表示件数(現状トップページのみ)
 
   #---------------------------------------
   # 記事編集
@@ -118,18 +120,26 @@ class ArticleController < ApplicationController
   # 記事一覧
   #------------------------------------
   def index
-    @articles = Article.joins(:user)
-      .select("articles.*, users.name, users.icon")
-      .order(created_at: :desc).limit(15)
-    mlist = MediaFile.select("min(id) as id")
-      .where(article_id: @articles.pluck("id").uniq)
-      .group(:article_id).map(&:id)
-    @media = MediaFile.where(id: mlist)
+
+    # items(新着順)
+    i_articles = Article.order(created_at: :desc).limit(DISPLAY)
+    i_mlist = MediaFile.select_media_list(i_articles)
 
     @items = Article.joins(:user)
-      .left_joins_media(mlist)
+      .left_joins_media(i_mlist)
       .select("articles.*, users.name, users.icon, media_files.media")
-      .order(created_at: :desc).limit(15)
+      .order(created_at: :desc).limit(DISPLAY)
+
+    # popular(人気順)
+    p_articles = Article.select_popular_as_pv
+      .order("pv desc").limit(DISPLAY)
+    p_mlist = MediaFile.select_media_list(p_articles)
+
+    @popular = Article.joins(:user)
+      .left_joins_media(p_mlist)
+      .select("articles.*, users.name, users.icon, media_files.media")
+      .select_popular_as_pv
+      .order("pv desc").limit(DISPLAY)
 
     render 'index', formats: 'json', handlers: 'jbuilder'
   end

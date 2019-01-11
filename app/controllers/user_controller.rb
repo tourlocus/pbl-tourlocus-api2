@@ -1,7 +1,7 @@
 class UserController < ApplicationController
 
   # ユーザーページ記事一覧
-  def items
+  def home
     user = User.find_by("name = ?", params[:name])
     @user = User.find(user.id)
     @follow = Follow.where("user_id = ?", user.id).count
