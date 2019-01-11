@@ -110,9 +110,7 @@ class ArticleController < ApplicationController
         .select("users.icon as userIcon, users.name as userName, comments.comment as comment")
         .where("comments.article_id = ?", params[:id])
 
-      if (current_user == nil) || (@article.user_id != current_user.id) then
-        Article.find(params[:id]).increment!(:pv)
-      end
+      Article.find(params[:id]).increment!(:pv)
 
       render 'show', formats: 'json', handlers: 'jbuilder'
     end
