@@ -120,7 +120,6 @@ class ArticleController < ApplicationController
   # 記事一覧
   #------------------------------------
   def index
-
     # items(新着順)
     i_articles = Article.order(created_at: :desc).limit(DISPLAY)
     i_mlist = MediaFile.select_media_list(i_articles)
@@ -130,6 +129,10 @@ class ArticleController < ApplicationController
       .select("articles.*, users.name, users.icon, media_files.media")
       .order(created_at: :desc).limit(DISPLAY)
 
+    render 'index', formats: 'json', handlers: 'jbuilder'
+  end
+
+  def popular
     # popular(人気順)
     p_articles = Article.select_popular_as_pv
       .order("pv desc").limit(DISPLAY)
@@ -141,7 +144,7 @@ class ArticleController < ApplicationController
       .select_popular_as_pv
       .order("pv desc").limit(DISPLAY)
 
-    render 'index', formats: 'json', handlers: 'jbuilder'
+    render 'popular', formats: 'json', handlers: 'jbuilder'
   end
 
 end
