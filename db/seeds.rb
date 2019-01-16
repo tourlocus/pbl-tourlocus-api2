@@ -71,3 +71,29 @@ open('db/csv/presents.csv', "rt:Shift_JIS:UTF-8", undef: :replace) do |f|
     )
   end
 end
+
+# comments
+CSV.foreach('db/csv/comments.csv', encoding: 'Shift_JIS:UTF-8') do |row|
+  Comment.create!(
+    :comment    => row[0],
+    :article_id => row[1],
+    :user_id    => row[2]
+  )
+end
+
+# follows
+CSV.foreach('db/csv/follows.csv', encoding: 'Shift_JIS:UTF-8') do |row|
+  Follow.create!(
+    :user_id   => row[0],
+    :follow_id => row[1]
+  )
+end
+
+# favorites
+CSV.foreach('db/csv/favorites.csv', encoding: 'Shift_JIS:UTF-8') do |row|
+  Favorite.create!(
+    :status     => true,
+    :user_id    => row[0],
+    :article_id => row[1]
+  )
+end
