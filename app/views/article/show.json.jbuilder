@@ -19,3 +19,16 @@ end
 
 json.created_at @article.created_at
 json.updated_at @article.updated_at 
+
+if @present != nil
+  json.present do
+    json.present_name     @present.name
+    json.present_amount   @present.num
+    json.present_price    @present.price
+    json.required         @present.target
+    json.impression       @present.content
+    json.photo            @present.url
+  end
+else
+  json.present nil
+end

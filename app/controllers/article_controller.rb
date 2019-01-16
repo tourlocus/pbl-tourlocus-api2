@@ -113,6 +113,10 @@ class ArticleController < ApplicationController
         .select("users.icon as userIcon, users.name as userName, comments.comment as comment")
         .where("comments.article_id = ?", params[:id])
 
+      @present = Present
+        .select("presents.*, image as url")
+        .find_by(article_id: params[:id])
+
       render 'show', formats: 'json', handlers: 'jbuilder'
     end
   end
