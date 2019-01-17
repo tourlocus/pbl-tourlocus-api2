@@ -17,6 +17,5 @@ json.comment do
   json.array!   @comments,  :userIcon,  :userName,  :comment
 end
 
-
 json.created_at @article.created_at
 json.updated_at @article.updated_at 

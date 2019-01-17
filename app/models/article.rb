@@ -17,4 +17,43 @@ class Article < ApplicationRecord
   def self.select_popular_as_pv
     select("(articles.pv+1) * 100000 / POW(DATEDIFF(CURDATE()+1, articles.created_at), 1.5) AS pv")
   end
+
+  # 検索
+  def self.search_word(word)
+    find_by_sql(['
+      SELECT DISTINCT
+        articles.*,
+        users.name,
+        users.icon,
+        (
+          SELECT
+            media
+          FROM
+            media_files, articles
+          WHERE
+            media_files.article_id = articles.id
+          ORDER BY
+            media
+          DESC LIMIT 1 
+        ) as "media"
+      FROM
+        articles
+      INNER JOIN
+        article_tags
+      ON
+        articles.id = article_tags.article_id
+      INNER JOIN
+        tags
+      ON
+        tags.id = article_tags.tag_id
+      INNER JOIN
+        users
+      ON
+        articles.user_id = users.id
+      WHERE
+        (tags.name in (:word))
+      OR
+        articles.title LIKE "%:word%"
+    ', {:word => word}])
+  end
 end
