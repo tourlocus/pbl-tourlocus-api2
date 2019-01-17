@@ -31,7 +31,8 @@ open('db/csv/articles.csv', "rt:Shift_JIS:UTF-8", undef: :replace) do |f|
       :title      => row[0],
       :content    => row[1],
       :user_id    => row[2],
-      :created_at => row[3]
+      :created_at => row[3],
+      :updated_at => row[4]
     )
   end
 end
