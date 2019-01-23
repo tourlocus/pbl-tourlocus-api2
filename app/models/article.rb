@@ -18,24 +18,138 @@ class Article < ApplicationRecord
     select("(articles.pv+1) * 100000 / POW(DATEDIFF(CURDATE()+1, articles.created_at), 1.5) AS pv")
   end
 
-  # 検索
-  def self.search_word(word)
+  # 自分の記事一覧
+  # -----------------------------------------
+  def self.user_items(id)
     find_by_sql(['
-      SELECT DISTINCT
+      SELECT
         articles.*,
+        users.id as "user_id",
         users.name,
         users.icon,
-        (
-          SELECT
-            media
-          FROM
-            media_files, articles
-          WHERE
-            media_files.article_id = articles.id
-          ORDER BY
-            media
-          DESC LIMIT 1 
-        ) as "media"
+        media_files.media
+      FROM
+        articles
+      INNER JOIN
+        users
+      ON
+        articles.user_id = :id
+      LEFT OUTER JOIN
+        media_files
+      ON
+        articles.id = media_files.article_id 
+      GROUP BY
+        id
+      ORDER BY
+        updated_at
+      DESC
+      ', {:id => id}
+    ])
+  end
+
+  # お気に入り記事一覧
+  # -----------------------------------------
+  def self.favorite_items(id)
+    find_by_sql(['
+      SELECT
+        articles.*,
+        users.id as "user_id",
+        users.name,
+        users.icon,
+        media_files.media
+      FROM
+        users
+      INNER JOIN
+        articles
+      ON
+        users.id = articles.user_id
+      INNER JOIN
+        favorites
+      ON
+        articles.id = favorites.article_id
+      LEFT OUTER JOIN
+        media_files
+      ON
+        articles.id = media_files.article_id
+      WHERE
+        favorites.status = true
+      AND
+        favorites.user_id = :id
+      GROUP BY
+        id
+      ORDER BY
+        articles.created_at
+      DESC
+      ', {:id => id}
+    ])
+  end
+
+  # 新着順
+  # ------------------------------------------
+  def self.select_new
+    find_by_sql(['
+      SELECT
+        articles.*,
+        users.id as "user_id",
+        users.name,
+        users.icon,
+        media_files.media
+      FROM
+        articles
+      INNER JOIN
+        users
+      ON
+        articles.user_id = users.id
+      LEFT OUTER JOIN
+        media_files
+      ON
+        articles.id = media_files.article_id
+      GROUP BY
+        id
+      ORDER BY
+        articles.created_at
+      DESC
+    '])
+  end
+
+  # 人気順
+  # -------------------------------------------
+  def self.select_popular
+    find_by_sql(['
+      SELECT
+        articles.*,
+        users.id as "user_id",
+        users.name,
+        users.icon,
+        media_files.media
+      FROM
+        articles
+      INNER JOIN
+        users
+      ON
+        articles.user_id = users.id
+      LEFT OUTER JOIN
+        media_files
+      ON
+        articles.id = media_files.article_id
+      GROUP BY
+        id
+      ORDER BY
+        articles.pv
+      DESC
+    '])
+  end
+
+  # 検索
+  # -----------------------------------------
+  def self.search_word(word)
+    find_by_sql(['
+      SELECT
+        articles.*,
+        users.id as "user_id",
+        users.name,
+        users.icon,
+        media_files.media
       FROM
         articles
       INNER JOIN
@@ -50,10 +164,22 @@ class Article < ApplicationRecord
         users
       ON
         articles.user_id = users.id
+      LEFT OUTER JOIN
+        media_files
+      ON
+        articles.id = media_files.article_id
       WHERE
         (tags.name in (:word))
       OR
-        articles.title LIKE "%:word%"
-    ', {:word => word}])
+        articles.title LIKE "%":word"%"
+      GROUP BY
+        id
+      ORDER BY
+        created_at
+      DESC
+      ', {:word => word}
+    ])
   end
+
+
 end

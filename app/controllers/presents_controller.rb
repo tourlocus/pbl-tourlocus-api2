@@ -9,54 +9,52 @@ class PresentsController < ApplicationController
     articles = Article.where(:user_id => current_user.id)
       .where.not(id: created_list)
       .select("id, title")
-      .order("created_at DESC").limit(5)
-
+      .order("created_at DESC")
     render json:{
-      userId: current_user.id,
-      articles: articles,
+      articleIdList: articles,
     }
   end
 
   # お土産作成(F->B, sql->insert)
   def create
-    # お土産テーブルにinsert
-      present_data = Present.create!(
-        :name => params[:present_name],
-        :num => params[:present_amount],
-        :price => params[:present_price],
-        :target => params[:required],
-        :content => params[:impression],
-        :article_id => params[:article_id]
-      )
-
-    # image保存
-    if params[:photo] != nil
-      image = present_data.update!(:image => params[:photo])
-      image.save!
-    end
-
+    Present.create!(
+      :name => params[:name],
+      :image => params[:files],
+      :kind => params[:kind],
+      :other_kind => params[:otherKind],
+      :target => params[:target],
+      :other_target => params[:otherTarget],
+      :price => params[:price],
+      :content => params[:content],
+      :article_id => params[:id]
+    )
     render :json => {message: "ok"}
   end
 
   # お土産編集(B->F, sql->select)
   def edit
-    # 受け取った記事(ID)が、ログインユーザー作成のもの出ない場合、エラー
-    user = Article.find_by(:id => params[:id])
-    if user.user_id != current_user.id
-      render json: {message: "error"}
-    else
-      present_data = Present.find_by(:article_id => params[:id])
-      render json: {
-        article_name: user.title,
-        article_id: params[:id],
-        present_name: present_data.name,
-        present_amount: present_data.num,
-        present_price: present_data.price,
-        required: present_data.target,
-        impression: present_data.content,
-        photo: present_data.image.url,
-      }
-    end
+    # # 受け取った記事(ID)が、ログインユーザー作成のもの出ない場合、エラー
+    # user = Article.find_by(:id => params[:id])
+    # if user.user_id != current_user.id
+    #   render json: {message: "error"}
+    # else
+    #   present_data = Present.find_by(:article_id => params[:id])
+    #   render json: {
+    #     article_name: user.title,
+    #     article_id: params[:id],
+    #     present_name: present_data.name,
+    #     present_amount: present_data.num,
+    #     present_price: present_data.price,
+    #     required: present_data.target,
+    #     impression: present_data.content,
+    #     photo: present_data.image.url,
+    #   }
+    # end
+    @articles = Article.where(:user_id => current_user.id)
+      .select("id, title")
+    @presents = Present.find_by(:id => params[:id])
+
+    render 'edit', formats: 'json', handlers: 'jbuilder'
   end
 
   # お土産編集(F->B, sql->update)
