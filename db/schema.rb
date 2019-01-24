@@ -70,11 +70,13 @@ ActiveRecord::Schema.define(version: 2018_11_09_051608) do
 
   create_table "presents", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
-    t.integer "price"
-    t.integer "num"
-    t.string "target"
-    t.string "content"
     t.string "image"
+    t.string "kind"
+    t.string "other_kind"
+    t.string "target"
+    t.string "other_target"
+    t.string "price"
+    t.string "content"
     t.bigint "article_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

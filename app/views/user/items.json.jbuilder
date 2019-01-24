@@ -1,39 +1,38 @@
-json.icon       @user.icon
-json.user_name  @user.name
-json.intro      @user.intro
-json.follow     @follow
-json.follower   @follower
+json.profile do
+  json.icon       @user.icon
+  json.user_name  @user.name
+  json.intro      @user.intro
+  json.follow     @follow
+  json.follower   @follower
+end
 
 # 自分の記事
-json.articles do 
-  json.array!(@articles) do |articles|
-    json.article_id   articles.id
-    json.title        articles.title
-    json.content      articles.content
-    json.updated_at   articles.updated_at
-
-    json.tags do
-      json.array! @tags.where(id: articles.id) do |tags|
-        json.tag  tags.name
-      end
-    end
+json.items do 
+  json.array!(@items) do |item|
+    json.id           item.id
+    json.user_id      item.user_id
+    json.user_icon    item.icon
+    json.user_name    item.name
+    json.media        item.media
+    json.title        item.title
+    json.content      item.content
+    json.created_at   item.created_at
+    json.updated_at   item.updated_at
   end
 end
 
 # お気に入り
 json.favorites do
-  json.array!(@favorites) do |favorites|
-    json.article_id  favorites.articleID
-    json.title       favorites.title
-    json.content     favorites.content
-    json.user_name   favorites.name
-    json.icon_image  favorites.icon
-    json.updated_at  favorites.updated_at
-
-    json.tags do
-      json.array! @tags.where(id: favorites.articleID) do |tags|
-        json.tag tags.name
-      end
-    end
+  json.array!(@favorites) do |favorite|
+    json.id           favorite.id
+    json.user_id      favorite.user_id
+    json.user_icon    favorite.icon
+    json.user_name    favorite.name
+    json.media        favorite.media
+    json.title        favorite.title
+    json.content      favorite.content
+    json.created_at   favorite.created_at
+    json.updated_at   favorite.updated_at
   end
+
 end

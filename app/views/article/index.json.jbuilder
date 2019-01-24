@@ -1,5 +1,5 @@
 json.items do
-  json.array!(@items) do |items|
+  json.array!(@newItems) do |items|
     json.id           items.id
     json.user_id      items.user_id
     json.user_icon    items.icon
@@ -13,7 +13,7 @@ json.items do
 end
 
 json.popular do
-  json.array!(@popular) do |popular|
+  json.array!(@popularItem) do |popular|
     json.id           popular.id
     json.user_id      popular.user_id
     json.user_icon    popular.icon
@@ -21,7 +21,6 @@ json.popular do
     json.media        popular.media
     json.title        popular.title
     json.content      popular.content
-    json.popular      popular.pv
     json.created_at   popular.created_at
     json.updated_at   popular.updated_at
   end

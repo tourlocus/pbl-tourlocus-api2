@@ -1,6 +1,7 @@
-json.items do
+json.search do
   json.array!(@items) do |items| 
     json.id items.id
+    json.user_id items.user_id
     json.user_name items.name
     json.user_icon items.icon
     json.title items.title
