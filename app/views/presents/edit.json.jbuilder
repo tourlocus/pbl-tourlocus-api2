@@ -9,7 +9,7 @@ json.present do
   json.id @presents.id
   json.curent_article_id @presents.article_id
   json.name @presents.name
-  json.file @presents.image
+  json.file @presents.image.url
   json.kind @presents.kind
   json.other_kind @presents.other_kind
   json.target @presents.target

@@ -17,7 +17,7 @@ class PresentsController < ApplicationController
 
   # お土産作成(F->B, sql->insert)
   def create
-    Present.create!(
+    present = Present.create!(
       :name => params[:name],
       :image => params[:files],
       :kind => params[:kind],
@@ -28,6 +28,7 @@ class PresentsController < ApplicationController
       :content => params[:content],
       :article_id => params[:id]
     )
+    present.save!
     render :json => {message: "ok"}
   end
 
