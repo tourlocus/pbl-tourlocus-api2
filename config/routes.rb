@@ -23,15 +23,16 @@ Rails.application.routes.draw do
   #---------------------------------
   # お気に入り
   #--------------------------------
-  post '/favorites', to: 'favorite#post'
+  post '/favorites/:id', to: 'favorite#post'
   delete '/favorites/:id', to: 'favorite#delete'
   #---------------------------------
   # お土産
   #--------------------------------
   get '/presents/new', to: 'presents#new'        # お土産作成(B->F select)
   post '/presents/create', to: 'presents#create' # お土産作成(F->B insert)
-  get '/presents/edit/:id', to: 'presents#edit'  # お土産編集(B->F select)
-  put '/presents/update', to: 'presents#update' # お土産編集(F->B update)
+  get '/presents/:id', to: 'presents#edit'  # お土産編集(B->F select)
+  get '/presents/:name/:id', to: 'presents#detail'
+  put '/presents/:id', to: 'presents#update' # お土産編集(F->B update)
   #---------------------------------
   # Devise 設定
   #---------------------------------

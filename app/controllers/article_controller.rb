@@ -95,6 +95,8 @@ class ArticleController < ApplicationController
     if @article.name != params[:name]
       render json: {message: 'name error'}, status: 401
     else
+      Article.find(params[:id]).increment!(:pv)
+      
       @tags = ArticleTag.joins(:tag)
         .select("tags.name")
         .where("article_tags.article_id = ?", params[:id])
@@ -106,12 +108,14 @@ class ArticleController < ApplicationController
       @fav_status = User.left_joins(:favorites)
         .select("users.id, favorites.article_id, favorites.status")
         .where("favorites.article_id = ?", params[:id])
-        .where("users.name = ?", params[:name])
+        .where("users.name = ?", params[:current])
         .where("favorites.status", true).exists?
 
       @comments = Comment.joins(:user)
         .select("users.icon as userIcon, users.name as userName, comments.comment as comment")
         .where("comments.article_id = ?", params[:id])
+
+      @presents = Present.where("article_id = ?", params[:id])
 
       render 'show', formats: 'json', handlers: 'jbuilder'
     end
@@ -120,10 +124,6 @@ class ArticleController < ApplicationController
   # 記事一覧
   #------------------------------------
   def index
-    list = Article.order(created_at: :desc)
-    l_mlist = MediaFile.select_media_list(list)
-    p l_mlist
-
     @newItems = Article.select_new
     @popularItem = Article.select_popular
 
