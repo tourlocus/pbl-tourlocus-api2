@@ -18,6 +18,40 @@ class Article < ApplicationRecord
     select("(articles.pv+1) * 100000 / POW(DATEDIFF(CURDATE()+1, articles.created_at), 1.5) AS pv")
   end
 
+  # 夏
+  def self.season_items(i, j, k)
+    find_by_sql(['
+      SELECT
+        articles.*,
+        users.id as "user_id",
+        users.name,
+        users.icon,
+        media_files.media
+      FROM
+        articles
+      INNER JOIN
+        users
+      ON
+        articles.user_id  = users.id
+      LEFT OUTER JOIN
+        media_files
+      ON
+        articles.id = media_files.article_id
+      WHERE
+        SUBSTRING(articles.created_at, 5, 7) LIKE "%" :i "%"
+      OR
+        SUBSTRING(articles.created_at, 5, 7) LIKE "%" :j "%"
+      OR
+        SUBSTRING(articles.created_at, 5, 7) LIKE "%" :k "%"
+      GROUP BY
+        id
+      ORDER BY
+        created_at
+      DESC
+      ', {:i => i, :j => j, :k => k}
+    ])
+  end
+
   # 自分の記事一覧
   # -----------------------------------------
   def self.user_items(id)

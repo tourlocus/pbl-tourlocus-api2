@@ -91,10 +91,6 @@ class ArticleController < ApplicationController
       .select("articles.*, users.name, users.icon")
       .where("articles.id = ?", params[:id]).first
 
-    # 記事を書いた人とparamの名前が違う人だった場合
-    if @article.name != params[:name]
-      render json: {message: 'name error'}, status: 401
-    else
       Article.find(params[:id]).increment!(:pv)
       
       @tags = ArticleTag.joins(:tag)
@@ -118,7 +114,6 @@ class ArticleController < ApplicationController
       @presents = Present.where("article_id = ?", params[:id])
 
       render 'show', formats: 'json', handlers: 'jbuilder'
-    end
   end
   #-------------------------------------
   # 記事一覧
@@ -144,5 +139,17 @@ class ArticleController < ApplicationController
     render 'search', formats: 'json', handlers: 'jbuilder'
   end
 
+  #-------------------------------------
+  # 夏
+  #------------------------------------
+  def season
+    @items = Article.season_items(
+      params[:i], 
+      params[:j], 
+      params[:j]
+    )
+
+    render 'season', formats: 'json', handlers: 'jbuilder'
+  end
 
 end
